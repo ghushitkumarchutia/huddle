@@ -11,20 +11,6 @@ const parseExpiry = (expiryStr) => {
   return 7 * 24 * 60 * 60 * 1000;
 };
 
-const parseCookies = (cookieHeader) => {
-  const list = {};
-  if (!cookieHeader) return list;
-  cookieHeader.split(`;`).forEach((cookie) => {
-    let [name, ...rest] = cookie.split(`=`);
-    name = name?.trim();
-    if (!name) return;
-    const value = rest.join(`=`).trim();
-    if (!value) return;
-    list[name] = decodeURIComponent(value);
-  });
-  return list;
-};
-
 const setRefreshTokenCookie = (res, token) => {
   const maxAge = parseExpiry(jwtRefreshExpiry);
   res.cookie("refreshToken", token, {
@@ -83,16 +69,14 @@ const login = asyncHandler(async (req, res) => {
 });
 
 const logout = asyncHandler(async (req, res) => {
-  const cookies = parseCookies(req.headers.cookie);
-  const refreshToken = cookies.refreshToken;
+  const refreshToken = req.cookies?.refreshToken;
   await authServices.logout(refreshToken);
   clearRefreshTokenCookie(res);
   res.status(200).json(new ApiResponse(200, null, "Logout successful"));
 });
 
 const refresh = asyncHandler(async (req, res) => {
-  const cookies = parseCookies(req.headers.cookie);
-  const oldRefreshToken = cookies.refreshToken;
+  const oldRefreshToken = req.cookies?.refreshToken;
   const { accessToken, refreshToken } =
     await authServices.refreshAccessToken(oldRefreshToken);
 
