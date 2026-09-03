@@ -8,20 +8,20 @@ const {
 
 const router = express.Router();
 
-const requireAuthPlaceholder = (req, res, next) => next();
+const requireAuth = require("../auth/auth.middleware");
 
 router.get("/:userId", userController.getProfile);
 
 router.patch(
   "/me",
-  requireAuthPlaceholder,
+  requireAuth,
   validate(updateProfileSchema),
   userController.updateProfile,
 );
 
 router.patch(
   "/me/password",
-  requireAuthPlaceholder,
+  requireAuth,
   validate(changePasswordSchema),
   userController.changePassword,
 );
