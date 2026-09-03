@@ -26,6 +26,6 @@ router.patch(
   userController.changePassword,
 );
 
-router.delete("/me", requireAuthPlaceholder, userController.deleteAccount);
+router.delete("/me", requireAuth, userController.deleteAccount);
 
 module.exports = router;
