@@ -8,7 +8,7 @@ const getProfile = asyncHandler(async (req, res) => {
 });
 
 const updateProfile = asyncHandler(async (req, res) => {
-  const user = await userServices.updateProfile(req.user._id, req.body);
+  const user = await userServices.updateProfile(req.user.id, req.body);
   res
     .status(200)
     .json(new ApiResponse(200, user, "Profile updated successfully"));
@@ -16,7 +16,7 @@ const updateProfile = asyncHandler(async (req, res) => {
 
 const changePassword = asyncHandler(async (req, res) => {
   await userServices.changePassword(
-    req.user._id,
+    req.user.id,
     req.body.currentPassword,
     req.body.newPassword,
   );
@@ -26,7 +26,7 @@ const changePassword = asyncHandler(async (req, res) => {
 });
 
 const deleteAccount = asyncHandler(async (req, res) => {
-  await userServices.deleteAccount(req.user._id);
+  await userServices.deleteAccount(req.user.id);
   res
     .status(200)
     .json(new ApiResponse(200, null, "Account deleted successfully"));
