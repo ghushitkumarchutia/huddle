@@ -1,4 +1,5 @@
 const User = require("./user.model");
+const Space = require("../spaces/space.model");
 const {
   hashPassword,
   comparePassword,
@@ -40,9 +41,24 @@ const changePassword = async (userId, currentPassword, newPassword) => {
 };
 
 const deleteAccount = async (userId) => {
+  const adminSpaces = await Space.findOne({ admin: userId });
+  if (adminSpaces) {
+    throw new ApiError(
+      400,
+      "Cannot delete account while you are the admin of a space",
+    );
+  }
+
   const user = await User.findByIdAndDelete(userId);
   if (!user) {
     throw new ApiError(404, "User not found");
+  }
+
+  if (user.spaces && user.spaces.length > 0) {
+    await Space.updateMany(
+      { _id: { $in: user.spaces } },
+      { $inc: { memberCount: -1 } },
+    );
   }
 };
 
