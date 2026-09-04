@@ -11,6 +11,7 @@ const errorHandler = require("./common/middleware/errorHandler.middleware");
 
 const authRoutes = require("./modules/auth/auth.routes");
 const userRoutes = require("./modules/users/user.routes");
+const spaceRoutes = require("./modules/spaces/space.routes");
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use(standardLimiter);
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/spaces", spaceRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
