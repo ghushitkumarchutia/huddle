@@ -4,8 +4,10 @@ const connectDB = require("./common/config/db.config");
 const { port } = require("./common/config/env.config");
 const logger = require("./common/utils/logger.utils");
 const cacheClient = require("./common/config/cache.config");
+const { initSocket } = require("./sockets/socket.server");
 
 const server = http.createServer(app);
+const io = initSocket(server);
 
 const startServer = async () => {
   try {
