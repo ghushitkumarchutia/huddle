@@ -14,6 +14,8 @@ const userRoutes = require("./modules/users/user.routes");
 const spaceRoutes = require("./modules/spaces/space.routes");
 const groupRoutes = require("./modules/groups/group.routes");
 const followRoutes = require("./modules/follows/follow.routes");
+const postRoutes = require("./modules/posts/post.routes");
+const feedRoutes = require("./modules/feed/feed.routes");
 
 const app = express();
 
@@ -28,6 +30,8 @@ app.use("/api/users", userRoutes);
 app.use("/api/spaces", spaceRoutes);
 app.use("/api/groups", groupRoutes);
 app.use("/api/follows", followRoutes);
+app.use("/api/posts", postRoutes);
+app.use("/api/feed", feedRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
