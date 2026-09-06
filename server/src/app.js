@@ -18,6 +18,7 @@ const postRoutes = require("./modules/posts/post.routes");
 const feedRoutes = require("./modules/feed/feed.routes");
 const likeRoutes = require("./modules/likes/like.routes");
 const commentRoutes = require("./modules/comments/comment.routes");
+const notificationRoutes = require("./modules/notifications/notification.routes");
 
 const app = express();
 
@@ -36,6 +37,7 @@ app.use("/api/posts", postRoutes);
 app.use("/api/feed", feedRoutes);
 app.use("/api/likes", likeRoutes);
 app.use("/api/comments", commentRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
