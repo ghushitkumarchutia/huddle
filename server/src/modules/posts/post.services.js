@@ -1,5 +1,6 @@
 const Post = require("./post.model");
 const FeedItem = require("../feed/feed.model");
+const Like = require("../likes/like.model");
 const User = require("../users/user.model");
 const Group = require("../groups/group.model");
 const followServices = require("../follows/follow.services");
@@ -72,6 +73,7 @@ const deletePost = async (userId, postId) => {
 
   await Post.findByIdAndDelete(postId);
   await FeedItem.deleteMany({ post: postId });
+  await Like.deleteMany({ post: postId });
 };
 
 module.exports = {

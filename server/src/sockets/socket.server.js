@@ -3,8 +3,10 @@ const socketAuthMiddleware = require("./socket.auth");
 const { registerEngagementHandlers } = require("./engagement.socket");
 const corsOptions = require("../common/config/cors.config");
 
+let io;
+
 const initSocket = (httpServer) => {
-  const io = new Server(httpServer, {
+  io = new Server(httpServer, {
     cors: corsOptions,
   });
 
@@ -17,6 +19,14 @@ const initSocket = (httpServer) => {
   return io;
 };
 
+const getIo = () => {
+  if (!io) {
+    throw new Error("Socket.io not initialized");
+  }
+  return io;
+};
+
 module.exports = {
   initSocket,
+  getIo,
 };
