@@ -1,5 +1,6 @@
 const Like = require("./like.model");
 const Post = require("../posts/post.model");
+const notificationServices = require("../notifications/notification.services");
 const { emitLikeCountUpdate } = require("../../sockets/engagement.socket");
 const { getIo } = require("../../sockets/socket.server");
 const ApiError = require("../../common/utils/apiError");
@@ -26,7 +27,12 @@ const likePost = async (userId, postId) => {
 
   emitLikeCountUpdate(getIo(), postId, updatedPost.likeCount);
 
-  // Note for Day 17: Create Notification for author here
+  await notificationServices.createNotification(
+    updatedPost.author,
+    userId,
+    "like",
+    postId,
+  );
 };
 
 const unlikePost = async (userId, postId) => {

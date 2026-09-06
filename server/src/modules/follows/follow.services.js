@@ -1,4 +1,5 @@
 const Follow = require("./follow.model");
+const notificationServices = require("../notifications/notification.services");
 const ApiError = require("../../common/utils/apiError");
 
 const followUser = async (followerId, followingId, spaceId) => {
@@ -12,6 +13,13 @@ const followUser = async (followerId, followingId, spaceId) => {
       following: followingId,
       space: spaceId,
     });
+
+    await notificationServices.createNotification(
+      followingId,
+      followerId,
+      "follow",
+    );
+
     return follow;
   } catch (error) {
     if (error.code === 11000) {

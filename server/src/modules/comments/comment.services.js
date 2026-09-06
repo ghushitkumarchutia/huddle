@@ -1,6 +1,7 @@
 const Comment = require("./comment.model");
 const Post = require("../posts/post.model");
 const User = require("../users/user.model");
+const notificationServices = require("../notifications/notification.services");
 const { emitCommentCountUpdate } = require("../../sockets/engagement.socket");
 const { getIo } = require("../../sockets/socket.server");
 const ApiError = require("../../common/utils/apiError");
@@ -34,7 +35,12 @@ const addComment = async (userId, postId, content) => {
 
   emitCommentCountUpdate(getIo(), postId, updatedPost.commentCount);
 
-  // Note for Day 17: Create Notification for author here
+  await notificationServices.createNotification(
+    updatedPost.author,
+    userId,
+    "comment",
+    postId,
+  );
 
   return comment;
 };
