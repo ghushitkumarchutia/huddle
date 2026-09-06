@@ -16,6 +16,7 @@ const groupRoutes = require("./modules/groups/group.routes");
 const followRoutes = require("./modules/follows/follow.routes");
 const postRoutes = require("./modules/posts/post.routes");
 const feedRoutes = require("./modules/feed/feed.routes");
+const likeRoutes = require("./modules/likes/like.routes");
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.use("/api/groups", groupRoutes);
 app.use("/api/follows", followRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/feed", feedRoutes);
+app.use("/api/likes", likeRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
