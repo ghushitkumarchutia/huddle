@@ -1,6 +1,6 @@
-const Notification = require("./notification.model");
-const User = require("../users/user.model");
-const ApiError = require("../../common/utils/apiError");
+import Notification from "./notification.model.js";
+import User from "../users/user.model.js";
+import ApiError from "../../common/utils/apiError.js";
 
 const createNotification = async (
   recipientId,
@@ -65,7 +65,7 @@ const markAsRead = async (userId, notificationId) => {
   return notification;
 };
 
-module.exports = {
+export default {
   createNotification,
   listNotifications,
   markAsRead,

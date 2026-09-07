@@ -1,5 +1,5 @@
-const bcrypt = require('bcrypt');
-const crypto = require('crypto');
+import bcrypt from "bcrypt";
+import crypto from "crypto";
 
 const hashPassword = async (plain) => {
   return bcrypt.hash(plain, 12);
@@ -10,11 +10,7 @@ const comparePassword = async (plain, hash) => {
 };
 
 const hashToken = (rawToken) => {
-  return crypto.createHash('sha256').update(rawToken).digest('hex');
+  return crypto.createHash("sha256").update(rawToken).digest("hex");
 };
 
-module.exports = {
-  hashPassword,
-  comparePassword,
-  hashToken
-};
+export { hashPassword, comparePassword, hashToken };

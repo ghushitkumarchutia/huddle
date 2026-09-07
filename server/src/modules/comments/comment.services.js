@@ -1,10 +1,10 @@
-const Comment = require("./comment.model");
-const Post = require("../posts/post.model");
-const User = require("../users/user.model");
-const notificationServices = require("../notifications/notification.services");
-const { emitCommentCountUpdate } = require("../../sockets/engagement.socket");
-const { getIo } = require("../../sockets/socket.server");
-const ApiError = require("../../common/utils/apiError");
+import Comment from "./comment.model.js";
+import Post from "../posts/post.model.js";
+import User from "../users/user.model.js";
+import notificationServices from "../notifications/notification.services.js";
+import { emitCommentCountUpdate } from "../../sockets/engagement.socket.js";
+import { getIo } from "../../sockets/socket.server.js";
+import ApiError from "../../common/utils/apiError.js";
 
 const addComment = async (userId, postId, content) => {
   const user = await User.findById(userId);
@@ -80,7 +80,7 @@ const deleteComment = async (userId, commentId) => {
   }
 };
 
-module.exports = {
+export default {
   addComment,
   listComments,
   deleteComment,

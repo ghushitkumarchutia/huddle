@@ -1,4 +1,4 @@
-const ApiError = require('../utils/apiError');
+import ApiError from "../utils/apiError.js";
 
 const validate = (schema) => {
   return (req, res, next) => {
@@ -14,9 +14,11 @@ const validate = (schema) => {
       }
       next();
     } catch (error) {
-      next(new ApiError(400, 'Validation failed', error.errors || error.message));
+      next(
+        new ApiError(400, "Validation failed", error.errors || error.message),
+      );
     }
   };
 };
 
-module.exports = validate;
+export default validate;

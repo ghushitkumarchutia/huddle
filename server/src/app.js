@@ -1,26 +1,24 @@
-const express = require("express");
-const cors = require("cors");
-const helmet = require("helmet");
-const cookieParser = require("cookie-parser");
-const corsOptions = require("./common/config/cors.config");
-const {
-  standardLimiter,
-} = require("./common/middleware/rateLimiter.middleware");
-const notFound = require("./common/middleware/notFound.middleware");
-const errorHandler = require("./common/middleware/errorHandler.middleware");
+import express from "express";
+import cors from "cors";
+import helmet from "helmet";
+import cookieParser from "cookie-parser";
+import corsOptions from "./common/config/cors.config.js";
+import { standardLimiter } from "./common/middleware/rateLimiter.middleware.js";
+import notFound from "./common/middleware/notFound.middleware.js";
+import errorHandler from "./common/middleware/errorHandler.middleware.js";
 
-const authRoutes = require("./modules/auth/auth.routes");
-const userRoutes = require("./modules/users/user.routes");
-const spaceRoutes = require("./modules/spaces/space.routes");
-const groupRoutes = require("./modules/groups/group.routes");
-const followRoutes = require("./modules/follows/follow.routes");
-const postRoutes = require("./modules/posts/post.routes");
-const feedRoutes = require("./modules/feed/feed.routes");
-const likeRoutes = require("./modules/likes/like.routes");
-const commentRoutes = require("./modules/comments/comment.routes");
-const notificationRoutes = require("./modules/notifications/notification.routes");
-const searchRoutes = require("./modules/search/search.routes");
-const digestRoutes = require("./modules/digest/digest.routes");
+import authRoutes from "./modules/auth/auth.routes.js";
+import userRoutes from "./modules/users/user.routes.js";
+import spaceRoutes from "./modules/spaces/space.routes.js";
+import groupRoutes from "./modules/groups/group.routes.js";
+import followRoutes from "./modules/follows/follow.routes.js";
+import postRoutes from "./modules/posts/post.routes.js";
+import feedRoutes from "./modules/feed/feed.routes.js";
+import likeRoutes from "./modules/likes/like.routes.js";
+import commentRoutes from "./modules/comments/comment.routes.js";
+import notificationRoutes from "./modules/notifications/notification.routes.js";
+import searchRoutes from "./modules/search/search.routes.js";
+import digestRoutes from "./modules/digest/digest.routes.js";
 
 const app = express();
 
@@ -46,4 +44,4 @@ app.use("/api/digest", digestRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
-module.exports = app;
+export default app;

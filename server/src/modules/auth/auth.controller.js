@@ -1,7 +1,7 @@
-const authServices = require("./auth.services");
-const asyncHandler = require("../../common/utils/asyncHandler");
-const ApiResponse = require("../../common/utils/apiResponse");
-const { jwtRefreshExpiry } = require("../../common/config/env.config");
+import authServices from "./auth.services.js";
+import asyncHandler from "../../common/utils/asyncHandler.js";
+import ApiResponse from "../../common/utils/apiResponse.js";
+import { jwtRefreshExpiry } from "../../common/config/env.config.js";
 
 const parseExpiry = (expiryStr) => {
   const value = parseInt(expiryStr);
@@ -109,7 +109,7 @@ const resetPassword = asyncHandler(async (req, res) => {
   res.status(200).json(new ApiResponse(200, null, "Password reset successful"));
 });
 
-module.exports = {
+export default {
   signup,
   login,
   logout,

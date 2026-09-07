@@ -1,10 +1,10 @@
-const jwt = require('jsonwebtoken');
-const { 
-  jwtAccessSecret, 
-  jwtAccessExpiry, 
-  jwtRefreshSecret, 
-  jwtRefreshExpiry 
-} = require('../config/env.config');
+import jwt from "jsonwebtoken";
+import {
+  jwtAccessSecret,
+  jwtAccessExpiry,
+  jwtRefreshSecret,
+  jwtRefreshExpiry,
+} from "../config/env.config.js";
 
 const signAccessToken = (payload) => {
   return jwt.sign(payload, jwtAccessSecret, { expiresIn: jwtAccessExpiry });
@@ -22,9 +22,9 @@ const verifyRefreshToken = (token) => {
   return jwt.verify(token, jwtRefreshSecret);
 };
 
-module.exports = {
+export {
   signAccessToken,
   verifyAccessToken,
   signRefreshToken,
-  verifyRefreshToken
+  verifyRefreshToken,
 };

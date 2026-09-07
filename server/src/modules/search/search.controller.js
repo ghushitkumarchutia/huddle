@@ -1,6 +1,6 @@
-const searchServices = require("./search.services");
-const asyncHandler = require("../../common/utils/asyncHandler");
-const ApiResponse = require("../../common/utils/apiResponse");
+import searchServices from "./search.services.js";
+import asyncHandler from "../../common/utils/asyncHandler.js";
+import ApiResponse from "../../common/utils/apiResponse.js";
 
 const searchMembers = asyncHandler(async (req, res) => {
   const { spaceId } = req.params;
@@ -20,7 +20,7 @@ const searchPosts = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, posts, "Posts retrieved successfully"));
 });
 
-module.exports = {
+export default {
   searchMembers,
   searchPosts,
 };

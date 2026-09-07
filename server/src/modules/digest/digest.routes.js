@@ -1,9 +1,9 @@
-const express = require("express");
-const digestController = require("./digest.controller");
-const requireAuth = require("../auth/auth.middleware");
+import express from "express";
+import digestController from "./digest.controller.js";
+import requireAuth from "../auth/auth.middleware.js";
 
 const router = express.Router();
 
 router.get("/", requireAuth, digestController.getDigest);
 
-module.exports = router;
+export default router;

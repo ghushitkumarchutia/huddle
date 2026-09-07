@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const FeedItemSchema = new mongoose.Schema(
   {
@@ -25,4 +25,4 @@ const FeedItemSchema = new mongoose.Schema(
 
 FeedItemSchema.index({ feedOwner: 1, createdAt: -1 });
 
-module.exports = mongoose.model("FeedItem", FeedItemSchema);
+export default mongoose.model("FeedItem", FeedItemSchema);

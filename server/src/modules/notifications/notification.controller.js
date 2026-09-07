@@ -1,6 +1,6 @@
-const notificationServices = require("./notification.services");
-const asyncHandler = require("../../common/utils/asyncHandler");
-const ApiResponse = require("../../common/utils/apiResponse");
+import notificationServices from "./notification.services.js";
+import asyncHandler from "../../common/utils/asyncHandler.js";
+import ApiResponse from "../../common/utils/apiResponse.js";
 
 const listNotifications = asyncHandler(async (req, res) => {
   const { page, limit } = req.query;
@@ -36,7 +36,7 @@ const markAsRead = asyncHandler(async (req, res) => {
     );
 });
 
-module.exports = {
+export default {
   listNotifications,
   markAsRead,
 };

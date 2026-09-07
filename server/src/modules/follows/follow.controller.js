@@ -1,6 +1,6 @@
-const followServices = require("./follow.services");
-const asyncHandler = require("../../common/utils/asyncHandler");
-const ApiResponse = require("../../common/utils/apiResponse");
+import followServices from "./follow.services.js";
+import asyncHandler from "../../common/utils/asyncHandler.js";
+import ApiResponse from "../../common/utils/apiResponse.js";
 
 const follow = asyncHandler(async (req, res) => {
   const { spaceId, userId: followingId } = req.params;
@@ -38,7 +38,7 @@ const listFollowing = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, following, "Following retrieved successfully"));
 });
 
-module.exports = {
+export default {
   follow,
   unfollow,
   listFollowers,

@@ -1,1 +1,2 @@
-module.exports = require("../users/user.model");
+import User from "../users/user.model.js";
+export default User;

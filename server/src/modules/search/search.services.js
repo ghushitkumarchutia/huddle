@@ -1,5 +1,5 @@
-const User = require("../users/user.model");
-const Post = require("../posts/post.model");
+import User from "../users/user.model.js";
+import Post from "../posts/post.model.js";
 
 const searchMembers = async (spaceId, query) => {
   if (!query) return [];
@@ -29,7 +29,7 @@ const searchPosts = async (spaceId, groupId, query) => {
   return posts;
 };
 
-module.exports = {
+export default {
   searchMembers,
   searchPosts,
 };

@@ -1,20 +1,20 @@
-const User = require("./auth.model");
-const PasswordResetToken = require("./passwordResetToken.model");
-const RefreshToken = require("../../models/refreshToken.model");
-const {
+import User from "./auth.model.js";
+import PasswordResetToken from "./passwordResetToken.model.js";
+import RefreshToken from "../../models/refreshToken.model.js";
+import {
   hashPassword,
   comparePassword,
   hashToken,
-} = require("../../common/utils/hash.utils");
-const { generateSecureToken } = require("../../common/utils/token.utils");
-const {
+} from "../../common/utils/hash.utils.js";
+import { generateSecureToken } from "../../common/utils/token.utils.js";
+import {
   signAccessToken,
   signRefreshToken,
   verifyRefreshToken,
-} = require("../../common/utils/jwt.utils");
-const { sendPasswordResetEmail } = require("../../common/utils/email.utils");
-const ApiError = require("../../common/utils/apiError");
-const { jwtRefreshExpiry } = require("../../common/config/env.config");
+} from "../../common/utils/jwt.utils.js";
+import { sendPasswordResetEmail } from "../../common/utils/email.utils.js";
+import ApiError from "../../common/utils/apiError.js";
+import { jwtRefreshExpiry } from "../../common/config/env.config.js";
 
 const parseExpiry = (expiryStr) => {
   const value = parseInt(expiryStr);
@@ -151,7 +151,7 @@ const resetPassword = async (rawToken, newPassword) => {
   await RefreshToken.deleteMany({ user: user._id });
 };
 
-module.exports = {
+export default {
   signup,
   login,
   logout,

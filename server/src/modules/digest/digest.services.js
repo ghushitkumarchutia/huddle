@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
-const Post = require("../posts/post.model");
-const { getOrSetCache } = require("../../common/utils/cache.utils");
+import mongoose from "mongoose";
+import Post from "../posts/post.model.js";
+import { getOrSetCache } from "../../common/utils/cache.utils.js";
 
 const getEngagementDigest = async (userId) => {
   const cacheKey = `digest:user:${userId}`;
@@ -74,6 +74,6 @@ const getEngagementDigest = async (userId) => {
   });
 };
 
-module.exports = {
+export default {
   getEngagementDigest,
 };

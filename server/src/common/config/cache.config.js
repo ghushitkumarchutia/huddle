@@ -1,6 +1,6 @@
-const Redis = require('ioredis');
-const { valkeyUrl } = require('./env.config');
+import Redis from "ioredis";
+import { valkeyUrl } from "./env.config.js";
 
 const cacheClient = new Redis(valkeyUrl);
 
-module.exports = cacheClient;
+export default cacheClient;

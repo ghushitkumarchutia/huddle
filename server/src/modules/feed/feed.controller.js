@@ -1,6 +1,6 @@
-const feedServices = require("./feed.services");
-const asyncHandler = require("../../common/utils/asyncHandler");
-const ApiResponse = require("../../common/utils/apiResponse");
+import feedServices from "./feed.services.js";
+import asyncHandler from "../../common/utils/asyncHandler.js";
+import ApiResponse from "../../common/utils/apiResponse.js";
 
 const getFeed = asyncHandler(async (req, res) => {
   const { page, limit, groupId } = req.query;
@@ -14,6 +14,6 @@ const getFeed = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, feed, "Feed retrieved successfully"));
 });
 
-module.exports = {
+export default {
   getFeed,
 };

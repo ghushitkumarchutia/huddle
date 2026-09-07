@@ -1,6 +1,6 @@
-const spaceServices = require("./space.services");
-const asyncHandler = require("../../common/utils/asyncHandler");
-const ApiResponse = require("../../common/utils/apiResponse");
+import spaceServices from "./space.services.js";
+import asyncHandler from "../../common/utils/asyncHandler.js";
+import ApiResponse from "../../common/utils/apiResponse.js";
 
 const createSpace = asyncHandler(async (req, res) => {
   const { name, description } = req.body;
@@ -33,7 +33,7 @@ const removeMember = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, null, "Member removed successfully"));
 });
 
-module.exports = {
+export default {
   createSpace,
   joinSpace,
   listMySpaces,

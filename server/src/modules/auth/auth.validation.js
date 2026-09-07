@@ -1,4 +1,4 @@
-const { z } = require("zod");
+import { z } from "zod";
 
 const passwordRule = z
   .string()
@@ -35,9 +35,4 @@ const resetPasswordSchema = z.object({
   }),
 });
 
-module.exports = {
-  signupSchema,
-  loginSchema,
-  forgotPasswordSchema,
-  resetPasswordSchema,
-};
+export { signupSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema };

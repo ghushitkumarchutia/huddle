@@ -1,5 +1,5 @@
-const { verifyAccessToken } = require("../../common/utils/jwt.utils");
-const ApiError = require("../../common/utils/apiError");
+import { verifyAccessToken } from "../../common/utils/jwt.utils.js";
+import ApiError from "../../common/utils/apiError.js";
 
 const requireAuth = (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -18,4 +18,4 @@ const requireAuth = (req, res, next) => {
   }
 };
 
-module.exports = requireAuth;
+export default requireAuth;

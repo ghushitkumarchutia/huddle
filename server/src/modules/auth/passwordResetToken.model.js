@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const PasswordResetTokenSchema = new mongoose.Schema({
   user: {
@@ -19,4 +19,4 @@ const PasswordResetTokenSchema = new mongoose.Schema({
 PasswordResetTokenSchema.index({ tokenHash: 1 });
 PasswordResetTokenSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
-module.exports = mongoose.model("PasswordResetToken", PasswordResetTokenSchema);
+export default mongoose.model("PasswordResetToken", PasswordResetTokenSchema);

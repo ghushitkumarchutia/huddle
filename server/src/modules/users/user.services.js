@@ -1,10 +1,10 @@
-const User = require("./user.model");
-const Space = require("../spaces/space.model");
-const {
+import User from "./user.model.js";
+import Space from "../spaces/space.model.js";
+import {
   hashPassword,
   comparePassword,
-} = require("../../common/utils/hash.utils");
-const ApiError = require("../../common/utils/apiError");
+} from "../../common/utils/hash.utils.js";
+import ApiError from "../../common/utils/apiError.js";
 
 const getPublicProfile = async (userId) => {
   const user = await User.findById(userId).select("-notificationPreferences");
@@ -62,7 +62,7 @@ const deleteAccount = async (userId) => {
   }
 };
 
-module.exports = {
+export default {
   getPublicProfile,
   updateProfile,
   changePassword,

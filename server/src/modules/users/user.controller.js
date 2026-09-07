@@ -1,6 +1,6 @@
-const userServices = require("./user.services");
-const asyncHandler = require("../../common/utils/asyncHandler");
-const ApiResponse = require("../../common/utils/apiResponse");
+import userServices from "./user.services.js";
+import asyncHandler from "../../common/utils/asyncHandler.js";
+import ApiResponse from "../../common/utils/apiResponse.js";
 
 const getProfile = asyncHandler(async (req, res) => {
   const user = await userServices.getPublicProfile(req.params.userId);
@@ -32,7 +32,7 @@ const deleteAccount = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, null, "Account deleted successfully"));
 });
 
-module.exports = {
+export default {
   getProfile,
   updateProfile,
   changePassword,

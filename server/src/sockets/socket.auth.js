@@ -1,5 +1,5 @@
-const { verifyAccessToken } = require("../common/utils/jwt.utils");
-const ApiError = require("../common/utils/apiError");
+import { verifyAccessToken } from "../common/utils/jwt.utils.js";
+import ApiError from "../common/utils/apiError.js";
 
 const socketAuthMiddleware = (socket, next) => {
   const tokenPayload = socket.handshake.auth?.token;
@@ -19,4 +19,4 @@ const socketAuthMiddleware = (socket, next) => {
   }
 };
 
-module.exports = socketAuthMiddleware;
+export default socketAuthMiddleware;

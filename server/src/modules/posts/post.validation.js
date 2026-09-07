@@ -1,4 +1,4 @@
-const Joi = require("joi");
+import Joi from "joi";
 
 const createPostSchema = Joi.object({
   content: Joi.string().trim().max(2000).required(),
@@ -10,7 +10,4 @@ const updatePostSchema = Joi.object({
   content: Joi.string().trim().max(2000).required(),
 });
 
-module.exports = {
-  createPostSchema,
-  updatePostSchema,
-};
+export { createPostSchema, updatePostSchema };

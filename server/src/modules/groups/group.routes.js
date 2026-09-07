@@ -1,8 +1,8 @@
-const express = require("express");
-const groupController = require("./group.controller");
-const requireAuth = require("../auth/auth.middleware");
-const validate = require("../../common/middleware/validate.middleware");
-const { createGroupSchema } = require("./group.validation");
+import express from "express";
+import groupController from "./group.controller.js";
+import requireAuth from "../auth/auth.middleware.js";
+import validate from "../../common/middleware/validate.middleware.js";
+import { createGroupSchema } from "./group.validation.js";
 
 const router = express.Router();
 
@@ -15,4 +15,4 @@ router.post(
 
 router.get("/:spaceId", requireAuth, groupController.listGroups);
 
-module.exports = router;
+export default router;

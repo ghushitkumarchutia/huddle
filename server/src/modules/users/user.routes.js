@@ -1,14 +1,13 @@
-const express = require("express");
-const userController = require("./user.controller");
-const validate = require("../../common/middleware/validate.middleware");
-const {
+import express from "express";
+import userController from "./user.controller.js";
+import validate from "../../common/middleware/validate.middleware.js";
+import {
   updateProfileSchema,
   changePasswordSchema,
-} = require("./user.validation");
+} from "./user.validation.js";
+import requireAuth from "../auth/auth.middleware.js";
 
 const router = express.Router();
-
-const requireAuth = require("../auth/auth.middleware");
 
 router.get("/:userId", userController.getProfile);
 
@@ -28,4 +27,4 @@ router.patch(
 
 router.delete("/me", requireAuth, userController.deleteAccount);
 
-module.exports = router;
+export default router;

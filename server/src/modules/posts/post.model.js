@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const PostSchema = new mongoose.Schema(
   {
@@ -62,4 +62,4 @@ const PostSchema = new mongoose.Schema(
 PostSchema.index({ space: 1, group: 1, createdAt: -1 });
 PostSchema.index({ author: 1 });
 
-module.exports = mongoose.model("Post", PostSchema);
+export default mongoose.model("Post", PostSchema);

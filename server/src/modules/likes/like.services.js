@@ -1,9 +1,9 @@
-const Like = require("./like.model");
-const Post = require("../posts/post.model");
-const notificationServices = require("../notifications/notification.services");
-const { emitLikeCountUpdate } = require("../../sockets/engagement.socket");
-const { getIo } = require("../../sockets/socket.server");
-const ApiError = require("../../common/utils/apiError");
+import Like from "./like.model.js";
+import Post from "../posts/post.model.js";
+import notificationServices from "../notifications/notification.services.js";
+import { emitLikeCountUpdate } from "../../sockets/engagement.socket.js";
+import { getIo } from "../../sockets/socket.server.js";
+import ApiError from "../../common/utils/apiError.js";
 
 const likePost = async (userId, postId) => {
   try {
@@ -55,7 +55,7 @@ const unlikePost = async (userId, postId) => {
   emitLikeCountUpdate(getIo(), postId, updatedPost.likeCount);
 };
 
-module.exports = {
+export default {
   likePost,
   unlikePost,
 };

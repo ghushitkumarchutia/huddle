@@ -1,10 +1,10 @@
-const http = require("http");
-const app = require("./app");
-const connectDB = require("./common/config/db.config");
-const { port } = require("./common/config/env.config");
-const logger = require("./common/utils/logger.utils");
-const cacheClient = require("./common/config/cache.config");
-const { initSocket } = require("./sockets/socket.server");
+import http from "http";
+import app from "./app.js";
+import connectDB from "./common/config/db.config.js";
+import { port } from "./common/config/env.config.js";
+import logger from "./common/utils/logger.utils.js";
+import cacheClient from "./common/config/cache.config.js";
+import { initSocket } from "./sockets/socket.server.js";
 
 const server = http.createServer(app);
 const io = initSocket(server);

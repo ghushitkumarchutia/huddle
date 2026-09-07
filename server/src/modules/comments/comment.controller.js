@@ -1,6 +1,6 @@
-const commentServices = require("./comment.services");
-const asyncHandler = require("../../common/utils/asyncHandler");
-const ApiResponse = require("../../common/utils/apiResponse");
+import commentServices from "./comment.services.js";
+import asyncHandler from "../../common/utils/asyncHandler.js";
+import ApiResponse from "../../common/utils/apiResponse.js";
 
 const addComment = asyncHandler(async (req, res) => {
   const { postId } = req.params;
@@ -32,7 +32,7 @@ const deleteComment = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, null, "Successfully deleted comment"));
 });
 
-module.exports = {
+export default {
   addComment,
   listComments,
   deleteComment,

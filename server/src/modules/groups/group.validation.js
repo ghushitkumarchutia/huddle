@@ -1,4 +1,4 @@
-const { z } = require("zod");
+import { z } from "zod";
 
 const createGroupSchema = z.object({
   body: z.object({
@@ -6,6 +6,4 @@ const createGroupSchema = z.object({
   }),
 });
 
-module.exports = {
-  createGroupSchema,
-};
+export { createGroupSchema };

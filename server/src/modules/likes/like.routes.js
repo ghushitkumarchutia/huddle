@@ -1,6 +1,6 @@
-const express = require("express");
-const likeController = require("./like.controller");
-const requireAuth = require("../auth/auth.middleware");
+import express from "express";
+import likeController from "./like.controller.js";
+import requireAuth from "../auth/auth.middleware.js";
 
 const router = express.Router();
 
@@ -8,4 +8,4 @@ router.post("/:postId", requireAuth, likeController.like);
 
 router.delete("/:postId", requireAuth, likeController.unlike);
 
-module.exports = router;
+export default router;

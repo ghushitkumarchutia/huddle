@@ -1,11 +1,11 @@
-const Post = require("./post.model");
-const FeedItem = require("../feed/feed.model");
-const Like = require("../likes/like.model");
-const Comment = require("../comments/comment.model");
-const User = require("../users/user.model");
-const Group = require("../groups/group.model");
-const followServices = require("../follows/follow.services");
-const ApiError = require("../../common/utils/apiError");
+import Post from "./post.model.js";
+import FeedItem from "../feed/feed.model.js";
+import Like from "../likes/like.model.js";
+import Comment from "../comments/comment.model.js";
+import User from "../users/user.model.js";
+import Group from "../groups/group.model.js";
+import followServices from "../follows/follow.services.js";
+import ApiError from "../../common/utils/apiError.js";
 
 const createPost = async (userId, spaceId, groupId, content, imageUrl) => {
   const user = await User.findById(userId);
@@ -78,7 +78,7 @@ const deletePost = async (userId, postId) => {
   await Comment.deleteMany({ post: postId });
 };
 
-module.exports = {
+export default {
   createPost,
   updatePost,
   deletePost,

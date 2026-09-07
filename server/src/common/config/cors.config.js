@@ -1,8 +1,8 @@
-const { clientOrigin } = require('./env.config');
+import { clientOrigin } from "./env.config.js";
 
 const corsOptions = {
   origin: clientOrigin,
-  credentials: true
+  credentials: true,
 };
 
-module.exports = corsOptions;
+export default corsOptions;

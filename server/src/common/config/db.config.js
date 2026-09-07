@@ -1,13 +1,13 @@
-const mongoose = require('mongoose');
-const { mongoUri } = require('./env.config');
+import mongoose from "mongoose";
+import { mongoUri } from "./env.config.js";
 
 const connectDB = async () => {
-  mongoose.connection.on('error', (err) => {
+  mongoose.connection.on("error", (err) => {
     console.error(err);
   });
 
-  mongoose.connection.on('disconnected', () => {
-    console.warn('MongoDB disconnected');
+  mongoose.connection.on("disconnected", () => {
+    console.warn("MongoDB disconnected");
   });
 
   await mongoose.connect(mongoUri, {
@@ -16,4 +16,4 @@ const connectDB = async () => {
   });
 };
 
-module.exports = connectDB;
+export default connectDB;

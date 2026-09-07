@@ -1,7 +1,7 @@
-const { Server } = require("socket.io");
-const socketAuthMiddleware = require("./socket.auth");
-const { registerEngagementHandlers } = require("./engagement.socket");
-const corsOptions = require("../common/config/cors.config");
+import { Server } from "socket.io";
+import socketAuthMiddleware from "./socket.auth.js";
+import { registerEngagementHandlers } from "./engagement.socket.js";
+import corsOptions from "../common/config/cors.config.js";
 
 let io;
 
@@ -26,7 +26,4 @@ const getIo = () => {
   return io;
 };
 
-module.exports = {
-  initSocket,
-  getIo,
-};
+export { initSocket, getIo };

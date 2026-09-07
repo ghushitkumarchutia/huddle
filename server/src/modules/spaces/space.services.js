@@ -1,11 +1,11 @@
-const crypto = require("crypto");
-const Space = require("./space.model");
-const User = require("../users/user.model");
-const {
+import crypto from "crypto";
+import Space from "./space.model.js";
+import User from "../users/user.model.js";
+import {
   getOrSetCache,
   invalidateCache,
-} = require("../../common/utils/cache.utils");
-const ApiError = require("../../common/utils/apiError");
+} from "../../common/utils/cache.utils.js";
+import ApiError from "../../common/utils/apiError.js";
 
 const createSpace = async (adminUserId, name, description) => {
   const inviteCode = crypto.randomBytes(6).toString("hex");
@@ -102,7 +102,7 @@ const removeMember = async (adminUserId, spaceId, targetUserId) => {
   await invalidateCache(`spaces:user:${targetUserId}`);
 };
 
-module.exports = {
+export default {
   createSpace,
   joinSpace,
   listUserSpaces,

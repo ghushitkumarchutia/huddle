@@ -1,9 +1,9 @@
-const express = require("express");
-const feedController = require("./feed.controller");
-const requireAuth = require("../auth/auth.middleware");
+import express from "express";
+import feedController from "./feed.controller.js";
+import requireAuth from "../auth/auth.middleware.js";
 
 const router = express.Router();
 
 router.get("/", requireAuth, feedController.getFeed);
 
-module.exports = router;
+export default router;

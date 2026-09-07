@@ -1,6 +1,6 @@
-const groupServices = require("./group.services");
-const asyncHandler = require("../../common/utils/asyncHandler");
-const ApiResponse = require("../../common/utils/apiResponse");
+import groupServices from "./group.services.js";
+import asyncHandler from "../../common/utils/asyncHandler.js";
+import ApiResponse from "../../common/utils/apiResponse.js";
 
 const createGroup = asyncHandler(async (req, res) => {
   const { spaceId } = req.params;
@@ -19,7 +19,7 @@ const listGroups = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, groups, "Groups fetched successfully"));
 });
 
-module.exports = {
+export default {
   createGroup,
   listGroups,
 };

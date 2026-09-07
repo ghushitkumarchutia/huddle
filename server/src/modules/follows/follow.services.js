@@ -1,6 +1,6 @@
-const Follow = require("./follow.model");
-const notificationServices = require("../notifications/notification.services");
-const ApiError = require("../../common/utils/apiError");
+import Follow from "./follow.model.js";
+import notificationServices from "../notifications/notification.services.js";
+import ApiError from "../../common/utils/apiError.js";
 
 const followUser = async (followerId, followingId, spaceId) => {
   if (followerId.toString() === followingId.toString()) {
@@ -65,7 +65,7 @@ const isFollowing = async (followerId, followingId, spaceId) => {
   return !!follow;
 };
 
-module.exports = {
+export default {
   followUser,
   unfollowUser,
   listFollowers,

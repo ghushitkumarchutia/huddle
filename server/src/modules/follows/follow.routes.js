@@ -1,6 +1,6 @@
-const express = require("express");
-const followController = require("./follow.controller");
-const requireAuth = require("../auth/auth.middleware");
+import express from "express";
+import followController from "./follow.controller.js";
+import requireAuth from "../auth/auth.middleware.js";
 
 const router = express.Router();
 
@@ -20,4 +20,4 @@ router.get(
   followController.listFollowing,
 );
 
-module.exports = router;
+export default router;

@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const FollowSchema = new mongoose.Schema(
   {
@@ -26,4 +26,4 @@ const FollowSchema = new mongoose.Schema(
 FollowSchema.index({ follower: 1, following: 1, space: 1 }, { unique: true });
 FollowSchema.index({ following: 1, space: 1 });
 
-module.exports = mongoose.model("Follow", FollowSchema);
+export default mongoose.model("Follow", FollowSchema);

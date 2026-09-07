@@ -1,9 +1,9 @@
-const Group = require("./group.model");
-const {
+import Group from "./group.model.js";
+import {
   getOrSetCache,
   invalidateCache,
-} = require("../../common/utils/cache.utils");
-const ApiError = require("../../common/utils/apiError");
+} from "../../common/utils/cache.utils.js";
+import ApiError from "../../common/utils/apiError.js";
 
 const createGroup = async (userId, spaceId, name) => {
   const existingGroup = await Group.findOne({ space: spaceId, name });
@@ -35,7 +35,7 @@ const listSpaceGroups = async (spaceId) => {
   return groups;
 };
 
-module.exports = {
+export default {
   createGroup,
   listSpaceGroups,
 };

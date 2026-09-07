@@ -1,6 +1,6 @@
-const digestServices = require("./digest.services");
-const asyncHandler = require("../../common/utils/asyncHandler");
-const ApiResponse = require("../../common/utils/apiResponse");
+import digestServices from "./digest.services.js";
+import asyncHandler from "../../common/utils/asyncHandler.js";
+import ApiResponse from "../../common/utils/apiResponse.js";
 
 const getDigest = asyncHandler(async (req, res) => {
   const digest = await digestServices.getEngagementDigest(req.user.id);
@@ -9,6 +9,6 @@ const getDigest = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, digest, "Digest retrieved successfully"));
 });
 
-module.exports = {
+export default {
   getDigest,
 };

@@ -16,7 +16,7 @@ const emitCommentCountUpdate = (io, postId, newCount) => {
   io.to(`post:${postId}`).emit("commentCountUpdate", { postId, newCount });
 };
 
-module.exports = {
+export {
   registerEngagementHandlers,
   emitLikeCountUpdate,
   emitCommentCountUpdate,

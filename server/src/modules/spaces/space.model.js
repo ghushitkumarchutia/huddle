@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const SpaceSchema = new mongoose.Schema(
   {
@@ -34,4 +34,4 @@ const SpaceSchema = new mongoose.Schema(
   },
 );
 
-module.exports = mongoose.model("Space", SpaceSchema);
+export default mongoose.model("Space", SpaceSchema);

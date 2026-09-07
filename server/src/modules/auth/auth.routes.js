@@ -1,15 +1,13 @@
-const express = require("express");
-const authController = require("./auth.controller");
-const validate = require("../../common/middleware/validate.middleware");
-const {
-  strictLimiter,
-} = require("../../common/middleware/rateLimiter.middleware");
-const {
+import express from "express";
+import authController from "./auth.controller.js";
+import validate from "../../common/middleware/validate.middleware.js";
+import { strictLimiter } from "../../common/middleware/rateLimiter.middleware.js";
+import {
   signupSchema,
   loginSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
-} = require("./auth.validation");
+} from "./auth.validation.js";
 
 const router = express.Router();
 
@@ -44,4 +42,4 @@ router.post(
   authController.resetPassword,
 );
 
-module.exports = router;
+export default router;

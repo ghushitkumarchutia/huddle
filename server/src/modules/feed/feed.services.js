@@ -1,4 +1,4 @@
-const FeedItem = require("./feed.model");
+import FeedItem from "./feed.model.js";
 
 const getFeed = async (userId, { page = 1, limit = 20, groupId }) => {
   const skip = (page - 1) * limit;
@@ -38,6 +38,6 @@ const getFeed = async (userId, { page = 1, limit = 20, groupId }) => {
   };
 };
 
-module.exports = {
+export default {
   getFeed,
 };

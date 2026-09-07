@@ -1,6 +1,6 @@
-const likeServices = require("./like.services");
-const asyncHandler = require("../../common/utils/asyncHandler");
-const ApiResponse = require("../../common/utils/apiResponse");
+import likeServices from "./like.services.js";
+import asyncHandler from "../../common/utils/asyncHandler.js";
+import ApiResponse from "../../common/utils/apiResponse.js";
 
 const like = asyncHandler(async (req, res) => {
   const { postId } = req.params;
@@ -14,7 +14,7 @@ const unlike = asyncHandler(async (req, res) => {
   res.status(200).json(new ApiResponse(200, null, "Successfully unliked post"));
 });
 
-module.exports = {
+export default {
   like,
   unlike,
 };

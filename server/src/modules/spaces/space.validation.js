@@ -1,4 +1,4 @@
-const { z } = require("zod");
+import { z } from "zod";
 
 const createSpaceSchema = z.object({
   body: z.object({
@@ -13,7 +13,4 @@ const joinSpaceSchema = z.object({
   }),
 });
 
-module.exports = {
-  createSpaceSchema,
-  joinSpaceSchema,
-};
+export { createSpaceSchema, joinSpaceSchema };

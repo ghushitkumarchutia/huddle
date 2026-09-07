@@ -1,6 +1,6 @@
-const postServices = require("./post.services");
-const asyncHandler = require("../../common/utils/asyncHandler");
-const ApiResponse = require("../../common/utils/apiResponse");
+import postServices from "./post.services.js";
+import asyncHandler from "../../common/utils/asyncHandler.js";
+import ApiResponse from "../../common/utils/apiResponse.js";
 
 const createPost = asyncHandler(async (req, res) => {
   const { spaceId, groupId, content } = req.body;
@@ -31,7 +31,7 @@ const deletePost = asyncHandler(async (req, res) => {
   res.status(200).json(new ApiResponse(200, null, "Post deleted successfully"));
 });
 
-module.exports = {
+export default {
   createPost,
   updatePost,
   deletePost,

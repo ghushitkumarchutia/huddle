@@ -1,8 +1,8 @@
-const express = require("express");
-const spaceController = require("./space.controller");
-const requireAuth = require("../auth/auth.middleware");
-const validate = require("../../common/middleware/validate.middleware");
-const { createSpaceSchema, joinSpaceSchema } = require("./space.validation");
+import express from "express";
+import spaceController from "./space.controller.js";
+import requireAuth from "../auth/auth.middleware.js";
+import validate from "../../common/middleware/validate.middleware.js";
+import { createSpaceSchema, joinSpaceSchema } from "./space.validation.js";
 
 const router = express.Router();
 
@@ -28,4 +28,4 @@ router.delete(
   spaceController.removeMember,
 );
 
-module.exports = router;
+export default router;
