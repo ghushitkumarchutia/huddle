@@ -1,14 +1,14 @@
 import FeedItem from "./feed.model.js";
 
 const getFeed = async (userId, { page = 1, limit = 20, groupId }) => {
-  const skip = (page - 1) * limit;
+  const parsedPage = parseInt(page) || 1;
+  const parsedLimit = parseInt(limit) || 20;
+  const skip = (parsedPage - 1) * parsedLimit;
 
-  const query = { feedOwner: userId };
-
-  let feedItemsQuery = FeedItem.find(query)
+  let feedItems = await FeedItem.find({ feedOwner: userId })
     .sort({ createdAt: -1 })
     .skip(skip)
-    .limit(limit)
+    .limit(parsedLimit)
     .populate({
       path: "post",
       populate: {
@@ -16,8 +16,6 @@ const getFeed = async (userId, { page = 1, limit = 20, groupId }) => {
         select: "name",
       },
     });
-
-  let feedItems = await feedItemsQuery;
 
   if (groupId) {
     feedItems = feedItems.filter(
@@ -32,9 +30,9 @@ const getFeed = async (userId, { page = 1, limit = 20, groupId }) => {
 
   return {
     posts,
-    page: parseInt(page),
-    limit: parseInt(limit),
-    hasMore: feedItems.length === limit,
+    page: parsedPage,
+    limit: parsedLimit,
+    hasMore: posts.length === parsedLimit,
   };
 };
 
