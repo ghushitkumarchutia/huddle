@@ -30,6 +30,13 @@ export const useAuth = () => {
     },
   });
 
+  const signupMutation = useMutation({
+    mutationFn: authApi.signup,
+    onSuccess: (response) => {
+      setAuth(response.data.user, response.data.accessToken);
+    },
+  });
+
   const logoutMutation = useMutation({
     mutationFn: authApi.logout,
     onSuccess: () => {
@@ -43,6 +50,8 @@ export const useAuth = () => {
     isRestoring,
     login: loginMutation.mutateAsync,
     isLoggingIn: loginMutation.isPending,
+    signup: signupMutation.mutateAsync,
+    isSigningUp: signupMutation.isPending,
     logout: logoutMutation.mutateAsync,
     isLoggingOut: logoutMutation.isPending,
     isAuthenticated: !!user,
