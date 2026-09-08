@@ -22,13 +22,27 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !originalRequest.url?.includes("/auth/refresh") &&
+      !originalRequest.url?.includes("/auth/login") &&
+      !originalRequest.url?.includes("/auth/signup")
+    ) {
       originalRequest._retry = true;
 
       try {
-        await axiosInstance.post("/auth/refresh");
+        const refreshResponse = await axiosInstance.post("/auth/refresh");
+        const newAccessToken = refreshResponse.data?.data?.accessToken;
+        if (newAccessToken) {
+          useAuthStore
+            .getState()
+            .setAuth(useAuthStore.getState().user, newAccessToken);
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        }
         return axiosInstance(originalRequest);
       } catch (refreshError) {
+        useAuthStore.getState().clearAuth();
         return Promise.reject(refreshError);
       }
     }
