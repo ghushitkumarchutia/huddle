@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import Input from "../common/Input";
 import Button from "../common/Button";
 
 const SignupForm = () => {
   const { signup, isSigningUp } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -22,6 +24,7 @@ const SignupForm = () => {
     setError(null);
     try {
       await signup(formData);
+      navigate("/feed");
     } catch (err) {
       setError(
         err.response?.data?.message || "Failed to sign up. Please try again.",

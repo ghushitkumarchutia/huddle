@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import Input from "../common/Input";
 import Button from "../common/Button";
 
 const LoginForm = () => {
   const { login, isLoggingIn } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -20,6 +22,7 @@ const LoginForm = () => {
     setError(null);
     try {
       await login(formData);
+      navigate("/feed");
     } catch (err) {
       setError(
         err.response?.data?.message ||

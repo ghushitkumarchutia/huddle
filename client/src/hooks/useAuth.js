@@ -31,7 +31,13 @@ export const useAuth = () => {
   });
 
   const signupMutation = useMutation({
-    mutationFn: authApi.signup,
+    mutationFn: async (payload) => {
+      await authApi.signup(payload);
+      return authApi.login({
+        email: payload.email,
+        password: payload.password,
+      });
+    },
     onSuccess: (response) => {
       setAuth(response.data.user, response.data.accessToken);
     },
