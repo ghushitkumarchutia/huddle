@@ -11,9 +11,9 @@ const addComment = async (userId, postId, content) => {
   if (!user) throw new ApiError(404, "User not found");
 
   const authorSnapshot = {
-    displayName: user.firstName + " " + user.lastName,
-    username: user.email.split("@")[0],
-    avatarUrl: user.avatar || null,
+    displayName: user.displayName,
+    username: user.username,
+    avatarUrl: user.avatarUrl || null,
   };
 
   const comment = await Comment.create({
