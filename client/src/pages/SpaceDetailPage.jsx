@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import useUiStore from "../../store/uiStore";
+import useUiStore from "../store/uiStore";
 import FeedList from "../components/feed/FeedList";
 import GroupList from "../components/groups/GroupList";
 import CreateGroupForm from "../components/groups/CreateGroupForm";
@@ -20,7 +20,6 @@ const SpaceDetailPage = () => {
 
   return (
     <div className='flex h-full'>
-      {/* Internal space sidebar just for groups, could be integrated into global sidebar, but structurally isolated here for simplicity */}
       <div className='w-64 border-r border-[#2A2A2A] bg-[#121212] p-4 hidden md:block overflow-y-auto'>
         <div className='flex items-center justify-between mb-4'>
           <h2 className='text-sm font-semibold text-zinc-100'>Groups</h2>

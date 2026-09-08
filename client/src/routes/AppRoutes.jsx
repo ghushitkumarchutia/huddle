@@ -14,6 +14,10 @@ import ProfilePage from "../pages/ProfilePage";
 import AccountSettingsPage from "../pages/AccountSettingsPage";
 import SpaceListPage from "../pages/SpaceListPage";
 import SpaceDetailPage from "../pages/SpaceDetailPage";
+import PostDetailPage from "../pages/PostDetailPage";
+import SearchPage from "../pages/SearchPage";
+import NotificationsPage from "../pages/NotificationsPage";
+import NotFoundPage from "../pages/NotFoundPage";
 
 const AppRoutes = () => {
   return (
@@ -34,7 +38,10 @@ const AppRoutes = () => {
           <Route path='/spaces' element={<SpaceListPage />} />
           <Route path='/spaces/:spaceId' element={<SpaceDetailPage />} />
           <Route path='/groups/:groupId' element={<FeedPage />} />
-          <Route path='*' element={<Navigate to='/feed' replace />} />
+          <Route path='/posts/:postId' element={<PostDetailPage />} />
+          <Route path='/search' element={<SearchPage />} />
+          <Route path='/notifications' element={<NotificationsPage />} />
+          <Route path='*' element={<NotFoundPage />} />
         </Route>
       </Route>
     </Routes>
