@@ -39,7 +39,7 @@ const joinSpace = async (userId, inviteCode) => {
     throw new ApiError(404, "User not found");
   }
 
-  if (user.spaces.includes(space._id)) {
+  if (user.spaces.some((s) => s.toString() === space._id.toString())) {
     throw new ApiError(400, "User is already a member of this space");
   }
 
@@ -88,7 +88,9 @@ const removeMember = async (adminUserId, spaceId, targetUserId) => {
     throw new ApiError(404, "Target user not found");
   }
 
-  const spaceIndex = targetUser.spaces.indexOf(spaceId);
+  const spaceIndex = targetUser.spaces.findIndex(
+    (s) => s.toString() === spaceId.toString(),
+  );
   if (spaceIndex === -1) {
     throw new ApiError(400, "Target user is not a member of this space");
   }
