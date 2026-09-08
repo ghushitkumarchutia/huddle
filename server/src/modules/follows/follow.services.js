@@ -46,13 +46,13 @@ const unfollowUser = async (followerId, followingId, spaceId) => {
 
 const listFollowers = async (userId, spaceId) => {
   return Follow.find({ following: userId, space: spaceId })
-    .populate("follower", "firstName lastName avatar")
+    .populate("follower", "displayName username avatarUrl")
     .sort({ createdAt: -1 });
 };
 
 const listFollowing = async (userId, spaceId) => {
   return Follow.find({ follower: userId, space: spaceId })
-    .populate("following", "firstName lastName avatar")
+    .populate("following", "displayName username avatarUrl")
     .sort({ createdAt: -1 });
 };
 
