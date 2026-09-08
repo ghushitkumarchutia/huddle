@@ -1,7 +1,7 @@
 import axiosInstance from "./axiosInstance";
 
 export const searchMembers = async (spaceId, query) => {
-  const { data } = await axiosInstance.get(`/api/search/${spaceId}/members`, {
+  const { data } = await axiosInstance.get(`/search/${spaceId}/members`, {
     params: { q: query },
   });
   return data;
@@ -10,7 +10,7 @@ export const searchMembers = async (spaceId, query) => {
 export const searchPosts = async (spaceId, groupId, query) => {
   const params = { q: query };
   if (groupId) params.groupId = groupId;
-  const { data } = await axiosInstance.get(`/api/search/${spaceId}/posts`, {
+  const { data } = await axiosInstance.get(`/search/${spaceId}/posts`, {
     params,
   });
   return data;

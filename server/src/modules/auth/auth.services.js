@@ -108,7 +108,7 @@ const refreshAccessToken = async (refreshTokenRaw) => {
     expiresAt: new Date(Date.now() + expiryMs),
   });
 
-  return { accessToken, refreshToken: newRawRefreshToken };
+  return { accessToken, refreshToken: newRawRefreshToken, userId: decoded.id };
 };
 
 const forgotPassword = async (email) => {

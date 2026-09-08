@@ -2,6 +2,7 @@ import authServices from "./auth.services.js";
 import asyncHandler from "../../common/utils/asyncHandler.js";
 import ApiResponse from "../../common/utils/apiResponse.js";
 import { jwtRefreshExpiry } from "../../common/config/env.config.js";
+import User from "../users/user.model.js";
 
 const parseExpiry = (expiryStr) => {
   const value = parseInt(expiryStr);
@@ -77,15 +78,28 @@ const logout = asyncHandler(async (req, res) => {
 
 const refresh = asyncHandler(async (req, res) => {
   const oldRefreshToken = req.cookies?.refreshToken;
-  const { accessToken, refreshToken } =
+  const { accessToken, refreshToken, userId } =
     await authServices.refreshAccessToken(oldRefreshToken);
 
   setRefreshTokenCookie(res, refreshToken);
 
+  let userObject = null;
+  if (userId) {
+    const user = await User.findById(userId);
+    if (user) {
+      userObject = user.toObject();
+      delete userObject.passwordHash;
+    }
+  }
+
   res
     .status(200)
     .json(
-      new ApiResponse(200, { accessToken }, "Token refreshed successfully"),
+      new ApiResponse(
+        200,
+        { accessToken, user: userObject },
+        "Token refreshed successfully",
+      ),
     );
 });
 
