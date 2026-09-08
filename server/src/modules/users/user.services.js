@@ -1,5 +1,12 @@
 import User from "./user.model.js";
 import Space from "../spaces/space.model.js";
+import Follow from "../follows/follow.model.js";
+import Post from "../posts/post.model.js";
+import FeedItem from "../feed/feed.model.js";
+import Like from "../likes/like.model.js";
+import Comment from "../comments/comment.model.js";
+import Notification from "../notifications/notification.model.js";
+import RefreshToken from "../../models/refreshToken.model.js";
 import {
   hashPassword,
   comparePassword,
@@ -60,6 +67,28 @@ const deleteAccount = async (userId) => {
       { $inc: { memberCount: -1 } },
     );
   }
+
+  const userPostIds = (await Post.find({ author: userId }).select("_id")).map(
+    (p) => p._id,
+  );
+
+  if (userPostIds.length > 0) {
+    await FeedItem.deleteMany({ post: { $in: userPostIds } });
+    await Like.deleteMany({ post: { $in: userPostIds } });
+    await Comment.deleteMany({ post: { $in: userPostIds } });
+  }
+
+  await Post.deleteMany({ author: userId });
+  await FeedItem.deleteMany({ feedOwner: userId });
+  await Follow.deleteMany({
+    $or: [{ follower: userId }, { following: userId }],
+  });
+  await Like.deleteMany({ user: userId });
+  await Comment.deleteMany({ author: userId });
+  await Notification.deleteMany({
+    $or: [{ recipient: userId }, { actor: userId }],
+  });
+  await RefreshToken.deleteMany({ user: userId });
 };
 
 export default {
