@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import useAuthStore from "../../store/authStore";
-import { getProfile } from "../../api/user.api";
+import useAuthStore from "../store/authStore";
+import { getProfile } from "../api/user.api";
 import ProfileHeader from "../components/profile/ProfileHeader";
 import EditProfileForm from "../components/profile/EditProfileForm";
 import Spinner from "../components/common/Spinner";
@@ -10,7 +10,6 @@ const ProfilePage = () => {
   const { userId } = useParams();
   const { user } = useAuthStore();
 
-  // if userId is not in params, or is "me", use "me". otherwise use userId.
   const targetId = !userId || userId === "me" ? "me" : userId;
   const isOwnProfile = targetId === "me" || targetId === user?.id;
 

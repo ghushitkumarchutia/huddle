@@ -15,3 +15,6 @@ export const formatRelativeTime = (dateString) => {
   if (diffInMonths < 12) return `${diffInMonths}mo ago`;
   return `${Math.floor(diffInMonths / 12)}y ago`;
 };
+
+export const formatDate = formatRelativeTime;
+export default formatRelativeTime;

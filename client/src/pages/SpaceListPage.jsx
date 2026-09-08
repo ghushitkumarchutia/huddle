@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { getSpaces } from "../api/space.api";
+import { listMySpaces } from "../api/space.api";
 import SpaceCard from "../components/spaces/SpaceCard";
 import CreateSpaceForm from "../components/spaces/CreateSpaceForm";
 import JoinSpaceForm from "../components/spaces/JoinSpaceForm";
@@ -15,7 +15,7 @@ const SpaceListPage = () => {
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["spaces"],
-    queryFn: getSpaces,
+    queryFn: listMySpaces,
   });
 
   return (

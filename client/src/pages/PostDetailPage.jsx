@@ -8,12 +8,7 @@ const PostDetailPage = () => {
   const { postId } = useParams();
   const queryClient = useQueryClient();
 
-  // Since backend doesn't currently expose a single-post GET endpoint,
-  // we retrieve the post from the feed cache.
-  // In a production app, we'd add the endpoint and useQuery here.
   let post = null;
-
-  // Search through all feed query caches
   const feedQueries = queryClient.getQueriesData({ queryKey: ["feed"] });
   for (const [queryKey, data] of feedQueries) {
     if (data?.pages) {

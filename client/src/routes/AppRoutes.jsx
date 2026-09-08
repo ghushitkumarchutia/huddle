@@ -8,7 +8,6 @@ import LoginPage from "../pages/LoginPage";
 import ForgotPasswordPage from "../pages/ForgotPasswordPage";
 import ResetPasswordPage from "../pages/ResetPasswordPage";
 
-// Protected Pages
 import FeedPage from "../pages/FeedPage";
 import ProfilePage from "../pages/ProfilePage";
 import AccountSettingsPage from "../pages/AccountSettingsPage";
@@ -28,10 +27,8 @@ const AppRoutes = () => {
       <Route path='/forgot-password' element={<ForgotPasswordPage />} />
       <Route path='/reset-password/:token' element={<ResetPasswordPage />} />
 
-      {/* Protected Routes */}
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
-          {/* Feed is the default authenticated view for now */}
           <Route path='/feed' element={<FeedPage />} />
           <Route path='/profile/:userId?' element={<ProfilePage />} />
           <Route path='/settings' element={<AccountSettingsPage />} />
