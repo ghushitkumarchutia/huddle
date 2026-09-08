@@ -19,9 +19,9 @@ const createPost = async (userId, spaceId, groupId, content, imageUrl) => {
     : "group";
 
   const authorSnapshot = {
-    displayName: user.firstName + " " + user.lastName,
-    username: user.email.split("@")[0],
-    avatarUrl: user.avatar || null,
+    displayName: user.displayName,
+    username: user.username,
+    avatarUrl: user.avatarUrl || null,
   };
 
   const post = await Post.create({
@@ -36,11 +36,13 @@ const createPost = async (userId, spaceId, groupId, content, imageUrl) => {
 
   const followers = await followServices.listFollowers(userId, spaceId);
 
-  const feedItems = followers.map((f) => ({
-    feedOwner: f.follower._id,
-    post: post._id,
-    createdAt: post.createdAt,
-  }));
+  const feedItems = followers
+    .filter((f) => f.follower)
+    .map((f) => ({
+      feedOwner: f.follower._id,
+      post: post._id,
+      createdAt: post.createdAt,
+    }));
 
   feedItems.push({
     feedOwner: userId,
