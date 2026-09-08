@@ -1,13 +1,17 @@
-import Joi from "joi";
+import { z } from "zod";
 
-const createPostSchema = Joi.object({
-  content: Joi.string().trim().max(2000).required(),
-  groupId: Joi.string().hex().length(24).required(),
-  spaceId: Joi.string().hex().length(24).required(),
-});
+const createPostSchema = {
+  body: z.object({
+    content: z.string().trim().min(1).max(2000),
+    groupId: z.string().min(1),
+    spaceId: z.string().min(1),
+  }),
+};
 
-const updatePostSchema = Joi.object({
-  content: Joi.string().trim().max(2000).required(),
-});
+const updatePostSchema = {
+  body: z.object({
+    content: z.string().trim().min(1).max(2000),
+  }),
+};
 
 export { createPostSchema, updatePostSchema };
