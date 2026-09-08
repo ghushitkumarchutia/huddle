@@ -1,0 +1,5 @@
+export const CONSTANTS = {
+  POST_MAX_LENGTH: 2000,
+  COMMENT_MAX_LENGTH: 500,
+  PAGE_SIZE: 20,
+};
