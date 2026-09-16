@@ -3,9 +3,12 @@ import rateLimit from "express-rate-limit";
 const isDev = process.env.NODE_ENV !== "production";
 
 const createRateLimiter = ({ windowMs, max }) => {
+  if (isDev) {
+    return (req, res, next) => next();
+  }
   return rateLimit({
     windowMs,
-    max: isDev ? 1000 : max,
+    max,
     standardHeaders: true,
     legacyHeaders: false,
     message: {
