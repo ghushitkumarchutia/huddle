@@ -6,6 +6,7 @@ import corsOptions from "./common/config/cors.config.js";
 import { standardLimiter } from "./common/middleware/rateLimiter.middleware.js";
 import notFound from "./common/middleware/notFound.middleware.js";
 import errorHandler from "./common/middleware/errorHandler.middleware.js";
+import loggerMiddleware from "./common/middleware/logger.middleware.js";
 
 import authRoutes from "./modules/auth/auth.routes.js";
 import userRoutes from "./modules/users/user.routes.js";
@@ -25,6 +26,7 @@ import digestRoutes from "./modules/digest/digest.routes.js";
 
 const app = express();
 
+app.use(loggerMiddleware);
 app.use(helmet());
 app.use(cors(corsOptions));
 app.use(express.json({ limit: "1mb" }));
