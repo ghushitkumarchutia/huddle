@@ -3,7 +3,12 @@ import { jest } from "@jest/globals";
 const mockUserFindById = jest.fn();
 const mockGroupFindById = jest.fn();
 const mockPostCreate = jest.fn();
+const mockPostFindById = jest.fn();
+const mockPostFindByIdAndDelete = jest.fn();
 const mockFeedItemInsertMany = jest.fn();
+const mockFeedItemDeleteMany = jest.fn();
+const mockLikeDeleteMany = jest.fn();
+const mockCommentDeleteMany = jest.fn();
 const mockListFollowers = jest.fn();
 
 jest.unstable_mockModule("../../src/modules/users/user.model.js", () => ({
@@ -21,21 +26,28 @@ jest.unstable_mockModule("../../src/modules/groups/group.model.js", () => ({
 jest.unstable_mockModule("../../src/modules/posts/post.model.js", () => ({
   default: {
     create: mockPostCreate,
+    findById: mockPostFindById,
+    findByIdAndDelete: mockPostFindByIdAndDelete,
   },
 }));
 
 jest.unstable_mockModule("../../src/modules/feed/feed.model.js", () => ({
   default: {
     insertMany: mockFeedItemInsertMany,
+    deleteMany: mockFeedItemDeleteMany,
   },
 }));
 
 jest.unstable_mockModule("../../src/modules/likes/like.model.js", () => ({
-  default: {},
+  default: {
+    deleteMany: mockLikeDeleteMany,
+  },
 }));
 
 jest.unstable_mockModule("../../src/modules/comments/comment.model.js", () => ({
-  default: {},
+  default: {
+    deleteMany: mockCommentDeleteMany,
+  },
 }));
 
 jest.unstable_mockModule(
@@ -65,7 +77,7 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
-describe("post.services.createPost — fan-out-on-write (Section 8.2)", () => {
+describe("post.services.createPost", () => {
   const userId = "author001";
   const spaceId = "space001";
   const groupId = "group001";
@@ -81,6 +93,7 @@ describe("post.services.createPost — fan-out-on-write (Section 8.2)", () => {
   const fakeGroup = {
     _id: groupId,
     name: "General",
+    space: { toString: () => spaceId },
   };
 
   const fakePost = {
@@ -172,5 +185,112 @@ describe("post.services.createPost — fan-out-on-write (Section 8.2)", () => {
 
     const insertedItems = mockFeedItemInsertMany.mock.calls[0][0];
     expect(insertedItems).toHaveLength(3);
+  });
+
+  it("should reject post creation when group does not belong to the space", async () => {
+    const wrongSpaceGroup = {
+      _id: groupId,
+      name: "General",
+      space: { toString: () => "differentSpaceId" },
+    };
+
+    mockUserFindById.mockResolvedValue(fakeUser);
+    mockGroupFindById.mockResolvedValue(wrongSpaceGroup);
+
+    await expect(
+      postServices.createPost(userId, spaceId, groupId, content, null),
+    ).rejects.toMatchObject({
+      statusCode: 400,
+      message: "Group does not belong to this space",
+    });
+
+    expect(mockPostCreate).not.toHaveBeenCalled();
+  });
+
+  it("should throw 404 when user does not exist", async () => {
+    mockUserFindById.mockResolvedValue(null);
+
+    await expect(
+      postServices.createPost(userId, spaceId, groupId, content, null),
+    ).rejects.toMatchObject({
+      statusCode: 404,
+      message: "User not found",
+    });
+  });
+
+  it("should throw 404 when group does not exist", async () => {
+    mockUserFindById.mockResolvedValue(fakeUser);
+    mockGroupFindById.mockResolvedValue(null);
+
+    await expect(
+      postServices.createPost(userId, spaceId, groupId, content, null),
+    ).rejects.toMatchObject({
+      statusCode: 404,
+      message: "Group not found",
+    });
+  });
+
+  it("should set visibility to space-wide for announcement groups", async () => {
+    const announcementGroup = {
+      _id: groupId,
+      name: "Announcements",
+      space: { toString: () => spaceId },
+    };
+
+    mockUserFindById.mockResolvedValue(fakeUser);
+    mockGroupFindById.mockResolvedValue(announcementGroup);
+    mockPostCreate.mockResolvedValue(fakePost);
+    mockListFollowers.mockResolvedValue([]);
+    mockFeedItemInsertMany.mockResolvedValue([]);
+
+    await postServices.createPost(userId, spaceId, groupId, content, null);
+
+    const createArg = mockPostCreate.mock.calls[0][0];
+    expect(createArg.visibility).toBe("space-wide");
+  });
+});
+
+describe("post.services.deletePost", () => {
+  it("should delete post and all associated feed items, likes, comments", async () => {
+    const fakePost = {
+      _id: "post001",
+      author: { toString: () => "user001" },
+    };
+    mockPostFindById.mockResolvedValue(fakePost);
+    mockPostFindByIdAndDelete.mockResolvedValue({});
+    mockFeedItemDeleteMany.mockResolvedValue({});
+    mockLikeDeleteMany.mockResolvedValue({});
+    mockCommentDeleteMany.mockResolvedValue({});
+
+    await postServices.deletePost("user001", "post001");
+
+    expect(mockPostFindByIdAndDelete).toHaveBeenCalledWith("post001");
+    expect(mockFeedItemDeleteMany).toHaveBeenCalledWith({ post: "post001" });
+    expect(mockLikeDeleteMany).toHaveBeenCalledWith({ post: "post001" });
+    expect(mockCommentDeleteMany).toHaveBeenCalledWith({ post: "post001" });
+  });
+
+  it("should throw 403 when non-author tries to delete", async () => {
+    const fakePost = {
+      _id: "post001",
+      author: { toString: () => "user001" },
+    };
+    mockPostFindById.mockResolvedValue(fakePost);
+
+    await expect(
+      postServices.deletePost("otherUser", "post001"),
+    ).rejects.toMatchObject({
+      statusCode: 403,
+    });
+  });
+
+  it("should throw 404 when post does not exist", async () => {
+    mockPostFindById.mockResolvedValue(null);
+
+    await expect(
+      postServices.deletePost("user001", "nonexistent"),
+    ).rejects.toMatchObject({
+      statusCode: 404,
+    });
   });
 });

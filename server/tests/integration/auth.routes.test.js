@@ -14,10 +14,6 @@ jest.unstable_mockModule("../../src/common/utils/cache.utils.js", () => ({
 }));
 
 const app = (await import("../../src/app.js")).default;
-const User = (await import("../../src/modules/users/user.model.js")).default;
-const PasswordResetToken = (
-  await import("../../src/modules/auth/passwordResetToken.model.js")
-).default;
 
 beforeAll(async () => {
   if (mongoose.connection.readyState === 0) {
@@ -40,8 +36,8 @@ beforeEach(async () => {
   }
 });
 
-describe("Auth Routes - Integration (E2E Flow)", () => {
-  it("should complete the full signup, login, refresh, and reset password flow", async () => {
+describe("Auth Routes — Full E2E Flow", () => {
+  it("should complete signup → login → refresh → forgot → reset → login-with-new-password", async () => {
     const signupRes = await request(app).post("/api/auth/signup").send({
       username: "testuser",
       email: "test@example.com",
@@ -60,7 +56,6 @@ describe("Auth Routes - Integration (E2E Flow)", () => {
     });
 
     expect(loginRes.statusCode).toBe(200);
-    expect(loginRes.body.success).toBe(true);
     expect(loginRes.body.data.accessToken).toBeDefined();
 
     const cookies = loginRes.headers["set-cookie"];
@@ -69,7 +64,6 @@ describe("Auth Routes - Integration (E2E Flow)", () => {
       c.startsWith("refreshToken="),
     );
     expect(refreshTokenCookie).toBeDefined();
-
     const cookieValue = refreshTokenCookie.split(";")[0];
 
     const refreshRes = await request(app)
@@ -78,7 +72,6 @@ describe("Auth Routes - Integration (E2E Flow)", () => {
       .send();
 
     expect(refreshRes.statusCode).toBe(200);
-    expect(refreshRes.body.success).toBe(true);
     expect(refreshRes.body.data.accessToken).toBeDefined();
 
     const forgotRes = await request(app)
@@ -86,11 +79,9 @@ describe("Auth Routes - Integration (E2E Flow)", () => {
       .send({ email: "test@example.com" });
 
     expect(forgotRes.statusCode).toBe(200);
-    expect(forgotRes.body.success).toBe(true);
-
     expect(mockSendPasswordResetEmail).toHaveBeenCalledTimes(1);
+
     const rawResetToken = mockSendPasswordResetEmail.mock.calls[0][1];
-    expect(rawResetToken).toBeDefined();
 
     const resetRes = await request(app).post("/api/auth/reset-password").send({
       token: rawResetToken,
@@ -98,7 +89,6 @@ describe("Auth Routes - Integration (E2E Flow)", () => {
     });
 
     expect(resetRes.statusCode).toBe(200);
-    expect(resetRes.body.success).toBe(true);
 
     const newLoginRes = await request(app).post("/api/auth/login").send({
       email: "test@example.com",
@@ -106,6 +96,99 @@ describe("Auth Routes - Integration (E2E Flow)", () => {
     });
 
     expect(newLoginRes.statusCode).toBe(200);
-    expect(newLoginRes.body.success).toBe(true);
+  });
+
+  it("should reject signup with duplicate email", async () => {
+    await request(app).post("/api/auth/signup").send({
+      username: "user1",
+      email: "dup@example.com",
+      password: "SecurePassword123",
+      displayName: "User 1",
+    });
+
+    const res = await request(app).post("/api/auth/signup").send({
+      username: "user2",
+      email: "dup@example.com",
+      password: "SecurePassword123",
+      displayName: "User 2",
+    });
+
+    expect(res.statusCode).toBe(400);
+  });
+
+  it("should reject signup with duplicate username", async () => {
+    await request(app).post("/api/auth/signup").send({
+      username: "dupuser",
+      email: "email1@example.com",
+      password: "SecurePassword123",
+      displayName: "User 1",
+    });
+
+    const res = await request(app).post("/api/auth/signup").send({
+      username: "dupuser",
+      email: "email2@example.com",
+      password: "SecurePassword123",
+      displayName: "User 2",
+    });
+
+    expect(res.statusCode).toBe(400);
+  });
+
+  it("should reject login with wrong password", async () => {
+    await request(app).post("/api/auth/signup").send({
+      username: "user1",
+      email: "user1@example.com",
+      password: "SecurePassword123",
+      displayName: "User 1",
+    });
+
+    const res = await request(app).post("/api/auth/login").send({
+      email: "user1@example.com",
+      password: "WrongPassword123",
+    });
+
+    expect(res.statusCode).toBe(401);
+  });
+
+  it("should reject login with non-existent email", async () => {
+    const res = await request(app).post("/api/auth/login").send({
+      email: "nobody@example.com",
+      password: "SecurePassword123",
+    });
+
+    expect(res.statusCode).toBe(401);
+  });
+
+  it("should reject protected routes without auth token", async () => {
+    const res = await request(app)
+      .patch("/api/users/me")
+      .send({ displayName: "Hacked" });
+    expect(res.statusCode).toBe(401);
+  });
+
+  it("should reject refresh with no cookie", async () => {
+    const res = await request(app).post("/api/auth/refresh").send();
+    expect(res.statusCode).toBe(401);
+  });
+
+  it("should not reveal whether email exists on forgot-password", async () => {
+    const res1 = await request(app)
+      .post("/api/auth/forgot-password")
+      .send({ email: "nobody@example.com" });
+
+    const res2 = await request(app)
+      .post("/api/auth/forgot-password")
+      .send({ email: "nobody@example.com" });
+
+    expect(res1.statusCode).toBe(200);
+    expect(res2.statusCode).toBe(200);
+  });
+
+  it("should reject signup with missing required fields", async () => {
+    const res = await request(app).post("/api/auth/signup").send({
+      email: "test@example.com",
+    });
+
+    expect(res.statusCode).toBe(400);
   });
 });

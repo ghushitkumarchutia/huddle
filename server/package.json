@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "test": "jest",
+    "test": "DOTENV_CONFIG_PATH=.env.test node --experimental-vm-modules node_modules/.bin/jest --no-watchman --forceExit --detectOpenHandles",
+    "test:unit": "DOTENV_CONFIG_PATH=.env.test node --experimental-vm-modules node_modules/.bin/jest --no-watchman --forceExit tests/unit",
+    "test:integration": "DOTENV_CONFIG_PATH=.env.test node --experimental-vm-modules node_modules/.bin/jest --no-watchman --forceExit --detectOpenHandles tests/integration",
     "lint": "eslint ."
   },
   "keywords": [],
