@@ -7,10 +7,11 @@ const createSpaceSchema = {
   }),
 };
 
-const joinSpaceSchema = {
+const updateSpaceSchema = {
   body: z.object({
-    inviteCode: z.string().min(1),
+    name: z.string().trim().min(1).max(100).optional(),
+    description: z.string().trim().max(300).optional(),
   }),
 };
 
-export { createSpaceSchema, joinSpaceSchema };
+export { createSpaceSchema, updateSpaceSchema };

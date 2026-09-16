@@ -1,112 +1,139 @@
 import crypto from "crypto";
 import Space from "./space.model.js";
-import User from "../users/user.model.js";
+import SpaceMembership from "../spaceMemberships/spaceMembership.model.js";
+import Post from "../posts/post.model.js";
+import FeedItem from "../feed/feed.model.js";
+import Follow from "../follows/follow.model.js";
+import Like from "../likes/like.model.js";
+import Comment from "../comments/comment.model.js";
+import Group from "../groups/group.model.js";
 import {
   getOrSetCache,
   invalidateCache,
 } from "../../common/utils/cache.utils.js";
 import ApiError from "../../common/utils/apiError.js";
 
-const createSpace = async (adminUserId, name, description) => {
+const createSpace = async (userId, organizationId, name, description) => {
   const inviteCode = crypto.randomBytes(6).toString("hex");
 
   const space = await Space.create({
+    organization: organizationId,
     name,
     description,
     inviteCode,
-    admin: adminUserId,
+    createdBy: userId,
     memberCount: 1,
   });
 
-  await User.findByIdAndUpdate(adminUserId, {
-    $addToSet: { spaces: space._id },
+  await SpaceMembership.create({
+    space: space._id,
+    user: userId,
+    role: "space_admin",
+    status: "active",
   });
 
-  await invalidateCache(`spaces:user:${adminUserId}`);
+  await invalidateCache(`spaces:org:${organizationId}`);
 
   return space;
 };
 
-const joinSpace = async (userId, inviteCode) => {
-  const space = await Space.findOne({ inviteCode });
+const listOrgSpaces = async (organizationId, userId) => {
+  const cacheKey = `spaces:org:${organizationId}:user:${userId}`;
 
-  if (!space) {
-    throw new ApiError(404, "Space not found or invalid invite code");
-  }
+  const spaces = await getOrSetCache(cacheKey, 300, async () => {
+    const memberships = await SpaceMembership.find({
+      user: userId,
+      status: "active",
+    }).select("space");
 
-  const user = await User.findById(userId);
-  if (!user) {
-    throw new ApiError(404, "User not found");
-  }
+    const memberSpaceIds = memberships.map((m) => m.space);
 
-  if (user.spaces.some((s) => s.toString() === space._id.toString())) {
-    throw new ApiError(400, "User is already a member of this space");
-  }
+    return Space.find({
+      organization: organizationId,
+      _id: { $in: memberSpaceIds },
+    }).sort({ createdAt: -1 });
+  });
 
-  user.spaces.push(space._id);
-  await user.save();
-
-  space.memberCount += 1;
-  await space.save();
-
-  await invalidateCache(`spaces:user:${userId}`);
-
-  return space;
+  return spaces;
 };
 
 const listUserSpaces = async (userId) => {
   const cacheKey = `spaces:user:${userId}`;
 
   const spaces = await getOrSetCache(cacheKey, 300, async () => {
-    const user = await User.findById(userId).populate("spaces");
-    if (!user) {
-      throw new ApiError(404, "User not found");
-    }
-    return user.spaces;
+    const memberships = await SpaceMembership.find({
+      user: userId,
+      status: "active",
+    })
+      .select("space")
+      .populate({
+        path: "space",
+        populate: { path: "organization", select: "name slug" },
+      });
+
+    return memberships.map((m) => m.space).filter(Boolean);
   });
 
   return spaces;
 };
 
-const removeMember = async (adminUserId, spaceId, targetUserId) => {
+const getSpace = async (spaceId) => {
   const space = await Space.findById(spaceId);
+  if (!space) {
+    throw new ApiError(404, "Space not found");
+  }
+  return space;
+};
+
+const updateSpace = async (spaceId, updates) => {
+  const allowed = {};
+  if (updates.name !== undefined) allowed.name = updates.name;
+  if (updates.description !== undefined)
+    allowed.description = updates.description;
+
+  const space = await Space.findByIdAndUpdate(spaceId, allowed, {
+    new: true,
+    runValidators: true,
+  });
 
   if (!space) {
     throw new ApiError(404, "Space not found");
   }
 
-  if (space.admin.toString() !== adminUserId.toString()) {
-    throw new ApiError(403, "Only the space admin can remove members");
+  await invalidateCache(`spaces:org:${space.organization}`);
+  return space;
+};
+
+const deleteSpace = async (spaceId) => {
+  const space = await Space.findById(spaceId);
+  if (!space) {
+    throw new ApiError(404, "Space not found");
   }
 
-  if (adminUserId.toString() === targetUserId.toString()) {
-    throw new ApiError(400, "Admin cannot remove themselves");
-  }
-
-  const targetUser = await User.findById(targetUserId);
-  if (!targetUser) {
-    throw new ApiError(404, "Target user not found");
-  }
-
-  const spaceIndex = targetUser.spaces.findIndex(
-    (s) => s.toString() === spaceId.toString(),
+  const postIds = (await Post.find({ space: spaceId }).select("_id")).map(
+    (p) => p._id,
   );
-  if (spaceIndex === -1) {
-    throw new ApiError(400, "Target user is not a member of this space");
+
+  if (postIds.length > 0) {
+    await FeedItem.deleteMany({ post: { $in: postIds } });
+    await Like.deleteMany({ post: { $in: postIds } });
+    await Comment.deleteMany({ post: { $in: postIds } });
   }
 
-  targetUser.spaces.splice(spaceIndex, 1);
-  await targetUser.save();
+  await Post.deleteMany({ space: spaceId });
+  await Follow.deleteMany({ space: spaceId });
+  await Group.deleteMany({ space: spaceId });
+  await SpaceMembership.deleteMany({ space: spaceId });
+  await Space.findByIdAndDelete(spaceId);
 
-  space.memberCount = Math.max(0, space.memberCount - 1);
-  await space.save();
-
-  await invalidateCache(`spaces:user:${targetUserId}`);
+  await invalidateCache(`spaces:org:${space.organization}`);
 };
 
 export default {
   createSpace,
-  joinSpace,
+  listOrgSpaces,
   listUserSpaces,
-  removeMember,
+  getSpace,
+  updateSpace,
+  deleteSpace,
 };

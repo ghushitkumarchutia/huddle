@@ -3,7 +3,8 @@ import asyncHandler from "../../common/utils/asyncHandler.js";
 import ApiResponse from "../../common/utils/apiResponse.js";
 
 const createPost = asyncHandler(async (req, res) => {
-  const { spaceId, groupId, content } = req.body;
+  const { spaceId } = req.params;
+  const { groupId, content } = req.body;
   let imageUrl = null;
   if (req.file) {
     imageUrl = "cloud_media_url_placeholder";

@@ -1,5 +1,8 @@
 import User from "./user.model.js";
+import OrgMembership from "../organizationMemberships/orgMembership.model.js";
+import SpaceMembership from "../spaceMemberships/spaceMembership.model.js";
 import Space from "../spaces/space.model.js";
+import Organization from "../organizations/organization.model.js";
 import Follow from "../follows/follow.model.js";
 import Post from "../posts/post.model.js";
 import FeedItem from "../feed/feed.model.js";
@@ -22,7 +25,14 @@ const getPublicProfile = async (userId) => {
 };
 
 const updateProfile = async (userId, updates) => {
-  const user = await User.findByIdAndUpdate(userId, updates, {
+  const allowed = {};
+  if (updates.displayName !== undefined)
+    allowed.displayName = updates.displayName;
+  if (updates.bio !== undefined) allowed.bio = updates.bio;
+  if (updates.avatarUrl !== undefined) allowed.avatarUrl = updates.avatarUrl;
+  if (updates.username !== undefined) allowed.username = updates.username;
+
+  const user = await User.findByIdAndUpdate(userId, allowed, {
     new: true,
     runValidators: true,
   });
@@ -48,25 +58,49 @@ const changePassword = async (userId, currentPassword, newPassword) => {
 };
 
 const deleteAccount = async (userId) => {
-  const adminSpaces = await Space.findOne({ admin: userId });
-  if (adminSpaces) {
+  const ownedOrgs = await OrgMembership.findOne({
+    user: userId,
+    role: "owner",
+    status: "active",
+  });
+
+  if (ownedOrgs) {
     throw new ApiError(
       400,
-      "Cannot delete account while you are the admin of a space",
+      "Cannot delete account while you are the owner of an organization. Transfer ownership first.",
     );
   }
 
-  const user = await User.findByIdAndDelete(userId);
+  const user = await User.findById(userId);
   if (!user) {
     throw new ApiError(404, "User not found");
   }
 
-  if (user.spaces && user.spaces.length > 0) {
+  const spaceMemberships = await SpaceMembership.find({ user: userId });
+  const memberSpaceIds = spaceMemberships.map((m) => m.space);
+
+  if (memberSpaceIds.length > 0) {
     await Space.updateMany(
-      { _id: { $in: user.spaces } },
+      { _id: { $in: memberSpaceIds } },
       { $inc: { memberCount: -1 } },
     );
   }
+
+  const orgMemberships = await OrgMembership.find({
+    user: userId,
+    status: "active",
+  });
+  const orgIds = orgMemberships.map((m) => m.organization);
+
+  if (orgIds.length > 0) {
+    await Organization.updateMany(
+      { _id: { $in: orgIds } },
+      { $inc: { memberCount: -1 } },
+    );
+  }
+
+  await OrgMembership.deleteMany({ user: userId });
+  await SpaceMembership.deleteMany({ user: userId });
 
   const userPostIds = (await Post.find({ author: userId }).select("_id")).map(
     (p) => p._id,
@@ -89,6 +123,8 @@ const deleteAccount = async (userId) => {
     $or: [{ recipient: userId }, { actor: userId }],
   });
   await RefreshToken.deleteMany({ user: userId });
+
+  await User.findByIdAndDelete(userId);
 };
 
 export default {

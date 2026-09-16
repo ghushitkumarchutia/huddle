@@ -9,7 +9,10 @@ import errorHandler from "./common/middleware/errorHandler.middleware.js";
 
 import authRoutes from "./modules/auth/auth.routes.js";
 import userRoutes from "./modules/users/user.routes.js";
+import organizationRoutes from "./modules/organizations/organization.routes.js";
+import orgMembershipRoutes from "./modules/organizationMemberships/orgMembership.routes.js";
 import spaceRoutes from "./modules/spaces/space.routes.js";
+import spaceMembershipRoutes from "./modules/spaceMemberships/spaceMembership.routes.js";
 import groupRoutes from "./modules/groups/group.routes.js";
 import followRoutes from "./modules/follows/follow.routes.js";
 import postRoutes from "./modules/posts/post.routes.js";
@@ -24,13 +27,16 @@ const app = express();
 
 app.use(helmet());
 app.use(cors(corsOptions));
-app.use(express.json());
+app.use(express.json({ limit: "1mb" }));
 app.use(cookieParser());
 app.use(standardLimiter);
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/organizations", organizationRoutes);
+app.use("/api/org-memberships", orgMembershipRoutes);
 app.use("/api/spaces", spaceRoutes);
+app.use("/api/space-memberships", spaceMembershipRoutes);
 app.use("/api/groups", groupRoutes);
 app.use("/api/follows", followRoutes);
 app.use("/api/posts", postRoutes);

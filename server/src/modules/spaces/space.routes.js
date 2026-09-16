@@ -2,30 +2,56 @@ import express from "express";
 import spaceController from "./space.controller.js";
 import requireAuth from "../auth/auth.middleware.js";
 import validate from "../../common/middleware/validate.middleware.js";
-import { createSpaceSchema, joinSpaceSchema } from "./space.validation.js";
+import { createSpaceSchema, updateSpaceSchema } from "./space.validation.js";
+import {
+  requireOrgMembership,
+  requireOrgPermission,
+  requireSpaceMembership,
+  requireSpacePermission,
+} from "../../common/middleware/authorization.middleware.js";
 
 const router = express.Router();
 
 router.post(
-  "/",
+  "/org/:organizationId",
   requireAuth,
+  requireOrgMembership(),
+  requireOrgPermission("organization.manage_spaces"),
   validate(createSpaceSchema),
   spaceController.createSpace,
 );
 
-router.post(
-  "/join",
+router.get(
+  "/org/:organizationId",
   requireAuth,
-  validate(joinSpaceSchema),
-  spaceController.joinSpace,
+  requireOrgMembership(),
+  spaceController.listOrgSpaces,
 );
 
 router.get("/me", requireAuth, spaceController.listMySpaces);
 
-router.delete(
-  "/:spaceId/members/:userId",
+router.get(
+  "/:spaceId",
   requireAuth,
-  spaceController.removeMember,
+  requireSpaceMembership(),
+  spaceController.getSpace,
+);
+
+router.patch(
+  "/:spaceId",
+  requireAuth,
+  requireSpaceMembership(),
+  requireSpacePermission("space.update"),
+  validate(updateSpaceSchema),
+  spaceController.updateSpace,
+);
+
+router.delete(
+  "/:spaceId",
+  requireAuth,
+  requireSpaceMembership(),
+  requireSpacePermission("space.update"),
+  spaceController.deleteSpace,
 );
 
 export default router;

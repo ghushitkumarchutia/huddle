@@ -6,6 +6,11 @@ import { getIo } from "../../sockets/socket.server.js";
 import ApiError from "../../common/utils/apiError.js";
 
 const likePost = async (userId, postId) => {
+  const post = await Post.findById(postId);
+  if (!post) {
+    throw new ApiError(404, "Post not found");
+  }
+
   try {
     await Like.create({ user: userId, post: postId });
   } catch (error) {
@@ -21,14 +26,12 @@ const likePost = async (userId, postId) => {
     { new: true },
   );
 
-  if (!updatedPost) {
-    throw new ApiError(404, "Post not found");
+  if (updatedPost) {
+    emitLikeCountUpdate(getIo(), postId, updatedPost.likeCount);
   }
 
-  emitLikeCountUpdate(getIo(), postId, updatedPost.likeCount);
-
   await notificationServices.createNotification(
-    updatedPost.author,
+    post.author,
     userId,
     "like",
     postId,
@@ -48,11 +51,9 @@ const unlikePost = async (userId, postId) => {
     { new: true },
   );
 
-  if (!updatedPost) {
-    throw new ApiError(404, "Post not found");
+  if (updatedPost) {
+    emitLikeCountUpdate(getIo(), postId, updatedPost.likeCount);
   }
-
-  emitLikeCountUpdate(getIo(), postId, updatedPost.likeCount);
 };
 
 export default {

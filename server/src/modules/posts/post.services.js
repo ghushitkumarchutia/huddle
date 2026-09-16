@@ -13,6 +13,8 @@ const createPost = async (userId, spaceId, groupId, content, imageUrl) => {
 
   const group = await Group.findById(groupId);
   if (!group) throw new ApiError(404, "Group not found");
+  if (group.space.toString() !== spaceId.toString())
+    throw new ApiError(400, "Group does not belong to this space");
 
   const visibility = group.name.toLowerCase().includes("announcement")
     ? "space-wide"

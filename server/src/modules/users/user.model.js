@@ -40,12 +40,6 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: "https://via.placeholder.com/150",
     },
-    spaces: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Space",
-      },
-    ],
     notificationPreferences: {
       likes: { type: Boolean, default: true },
       comments: { type: Boolean, default: true },

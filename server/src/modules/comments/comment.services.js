@@ -7,6 +7,9 @@ import { getIo } from "../../sockets/socket.server.js";
 import ApiError from "../../common/utils/apiError.js";
 
 const addComment = async (userId, postId, content) => {
+  const post = await Post.findById(postId);
+  if (!post) throw new ApiError(404, "Post not found");
+
   const user = await User.findById(userId);
   if (!user) throw new ApiError(404, "User not found");
 
@@ -29,14 +32,12 @@ const addComment = async (userId, postId, content) => {
     { new: true },
   );
 
-  if (!updatedPost) {
-    throw new ApiError(404, "Post not found");
+  if (updatedPost) {
+    emitCommentCountUpdate(getIo(), postId, updatedPost.commentCount);
   }
 
-  emitCommentCountUpdate(getIo(), postId, updatedPost.commentCount);
-
   await notificationServices.createNotification(
-    updatedPost.author,
+    post.author,
     userId,
     "comment",
     postId,
@@ -46,12 +47,14 @@ const addComment = async (userId, postId, content) => {
 };
 
 const listComments = async (postId, { page = 1, limit = 20 }) => {
-  const skip = (page - 1) * limit;
+  const parsedPage = parseInt(page) || 1;
+  const parsedLimit = Math.min(parseInt(limit) || 20, 100);
+  const skip = (parsedPage - 1) * parsedLimit;
 
   const comments = await Comment.find({ post: postId })
     .sort({ createdAt: 1 })
     .skip(skip)
-    .limit(parseInt(limit));
+    .limit(parsedLimit);
 
   return comments;
 };
